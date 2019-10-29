@@ -1,7 +1,11 @@
+from collections import deque
+
 class ColumnsField():
     
     def __init__(self,rows:int,columns:int):
+        self._score = 0
         self._field = []
+        self._next_faller = deque([])
         self._faller_exists = False
         self._faller_state = 'None'
         self._time_freeze = False
@@ -37,6 +41,7 @@ class ColumnsField():
                 for colIndex in range(len(self._field[0])):
                     if (rowIndex,colIndex) in self._matching:
                         self._field[rowIndex][colIndex] = ' '
+                        self._score += 100
             self._matching = set()
             self.jewel_fall()
             self._match_found = True

@@ -70,7 +70,15 @@ class ColumnsGame:
             jewels = list(colors.keys())
             for number in range(3):
                 faller.append(random.choice(jewels))
-            self._state.make_faller(random.randint(1,_COLUMNS_COLUMNS),faller)
+            if len(self._state._next_faller) == 0:
+                self._state._next_faller.append(faller)
+                faller = []
+                for number in range(3):
+                    faller.append(random.choice(jewels))
+                self._state._next_faller.append(faller)
+            else:
+                self._state._next_faller.append(faller)   
+            self._state.make_faller(random.randint(1,_COLUMNS_COLUMNS),self._state._next_faller.popleft())
         else:
             self._state.clear_old_faller()
             self._state.drop()
@@ -101,6 +109,9 @@ class ColumnsGame:
                 self._state.move_faller('>')
             elif event.key == pygame.K_SPACE:
                 self._state.rotate_faller()
+            elif event.key == pygame.K_r:
+                self._state = columns_mechanics.ColumnsField(_COLUMNS_ROWS,_COLUMNS_COLUMNS)
+                self.run()
 
     def _stop_running(self)->None:
         self._running = False
@@ -109,6 +120,7 @@ class ColumnsGame:
         self._surface.fill(pygame.Color(0,0,0))
         self._draw_grid()
         self._draw_scoring()
+        self._draw_next_faller()
         pygame.display.flip()
         if self._state._faller_state == 'Landed':
             self._draw_landing_faller()
@@ -133,10 +145,23 @@ class ColumnsGame:
 
     def _draw_scoring(self)->None:
         font = pygame.font.Font('anton.ttf',32)
-        text = font.render('Score: ', True, (0,255,0),(0,0,128))
+        text = font.render('Score: ' + str(self._state._score), True, (0,255,0))
         textRect = text.get_rect()
         textRect.center = (self._WINDOWS_WIDTH+100, self._WINDOWS_HEIGHT/2)
         self._surface.blit(text,textRect)
+
+    def _draw_next_faller(self)->None:
+        font = pygame.font.Font('anton.ttf',28)
+        text = font.render('Next Faller ', True, (0,0,255))
+        textRect = text.get_rect()
+        textRect.center = (self._WINDOWS_WIDTH+100, 30)
+        self._surface.blit(text,textRect)
+        if len(self._state._next_faller) != 0:
+            next_faller = self._state._next_faller[0]
+            for i in range(len(next_faller)):
+                pygame.draw.rect(self._surface,colors[next_faller[i]],[self._WINDOWS_WIDTH+90, 50 + (i+1) * 21,20,20])
+        pygame.draw.rect(self._surface,(255,255,255), [self._WINDOWS_WIDTH+70, 60, 60, 90],3)
+            
                     
     def _draw_landing_faller(self)->None:
 
