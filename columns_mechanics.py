@@ -128,6 +128,19 @@ class ColumnsField():
             if self.check_game_over():
                 raise GameOverError()
 
+    def hard_drop(self)->None:
+        """Drops the full faller onto the nearest available space"""
+        for i in range(1,len(self._field)):
+            if self._field[-i][self._faller_column] == ' ':
+                open_spot = -i
+                break
+        l = len(self._field)
+        new_faller_rows = [l+open_spot-2,l+open_spot-1,l+open_spot]
+        self.clear_old_faller()
+        self._faller_rows = new_faller_rows
+            
+            
+
     def clear_old_faller(self)->None:
         """Clears old faller remnants on the board"""
         for row in range(len(self._faller_rows)):

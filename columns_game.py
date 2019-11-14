@@ -60,6 +60,7 @@ class ColumnsGame:
                 draw_delay += 1
                 
         except columns_mechanics.GameOverError:
+            #self._draw_game_over()
             self._stop_running()
         finally:
             pygame.quit()
@@ -90,6 +91,7 @@ class ColumnsGame:
                     self._state.update()
                     self._state.check_matching()
                     self._state.destroy_jewels()
+                print(self._state._faller_rows)
             
 
     def _create_surface(self,size:(int,int))->None:
@@ -100,6 +102,7 @@ class ColumnsGame:
             self._handle_event(event)
 
     def _handle_event(self,event)->None:
+        """Handles user inputted events"""
         if event.type == pygame.QUIT:
             self._stop_running()
         elif event.type == pygame.KEYDOWN:
@@ -112,11 +115,15 @@ class ColumnsGame:
             elif event.key == pygame.K_r:
                 self._state = columns_mechanics.ColumnsField(_COLUMNS_ROWS,_COLUMNS_COLUMNS)
                 self.run()
+            elif event.key == pygame.K_DOWN:
+                self._state.hard_drop()
 
     def _stop_running(self)->None:
+        """Stops the game from running"""
         self._running = False
 
     def _draw_frame(self)->None:
+        """Function that calls other draw functions to setup the screen"""
         self._surface.fill(pygame.Color(0,0,0))
         self._draw_grid()
         self._draw_scoring()
@@ -127,7 +134,7 @@ class ColumnsGame:
             pygame.display.flip()
 
     def _draw_grid(self)->None:
-
+        """Draws the column grid where the game takes place"""
         _GRID_WIDTH = self._get_grid_width()
         _GRID_HEIGHT = self._get_grid_height()
         
@@ -144,6 +151,7 @@ class ColumnsGame:
                                   _GRID_WIDTH, _GRID_HEIGHT])
 
     def _draw_scoring(self)->None:
+        """Draws the current score in the current game"""
         font = pygame.font.Font('anton.ttf',32)
         text = font.render('Score: ' + str(self._state._score), True, (0,255,0))
         textRect = text.get_rect()
@@ -151,8 +159,9 @@ class ColumnsGame:
         self._surface.blit(text,textRect)
 
     def _draw_next_faller(self)->None:
+        """Draws the faller that will be dropped next"""
         font = pygame.font.Font('anton.ttf',28)
-        text = font.render('Next Faller ', True, (0,0,255))
+        text = font.render('Next Faller', True, (0,0,255))
         textRect = text.get_rect()
         textRect.center = (self._WINDOWS_WIDTH+100, 30)
         self._surface.blit(text,textRect)
@@ -164,7 +173,7 @@ class ColumnsGame:
             
                     
     def _draw_landing_faller(self)->None:
-
+        """Draws a landing faller with white to create a blink effect"""
         _GRID_WIDTH = self._get_grid_width()
         _GRID_HEIGHT = self._get_grid_height()
         
@@ -177,10 +186,20 @@ class ColumnsGame:
                           _GRID_WIDTH, _GRID_HEIGHT])
                 
     def _get_grid_height(self)->float:
+        """Returns the grid height given the set windows height and the amount of rows"""
         return 0.965 * (self._WINDOWS_HEIGHT / _COLUMNS_ROWS)        
 
     def _get_grid_width(self)->float:
+        """Returns the grid width given the set windows width and the amount of columns"""
         return 0.965 * (self._WINDOWS_WIDTH / _COLUMNS_COLUMNS)
+
+    def _draw_game_over(self)->None:
+        """Draws the game over popup when the player loses"""
+        font = pygame.font.Font('anton.ttf', 36)
+        text = font.render('Game Over', True, (255, 0, 0))
+        textRect = text.get_rect()
+        textRect.center = (self._WINDOWS_WIDTH/2, self._WINDOWS_HEIGHT/2)
+        self._surface.blit(text,textRect)
                 
 
 if __name__ == '__main__':
