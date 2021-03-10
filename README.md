@@ -10,7 +10,7 @@ Use git clone to grab the files for this project
 ```
 git clone https://github.com/iamzwzhong/Columns-In-Py
 ```
-You can now run the game by instally Pygames on your computer or just run ```columns_games.exe```
+Run the game by installing Pygames on your computer or run ```columns_games.exe```
 
 ## Functionalities
 
