@@ -3,6 +3,7 @@ from collections import deque
 class ColumnsField():
     
     def __init__(self,rows:int,columns:int):
+        """Initializes variables needed for the game"""
         self._score = 0
         self._field = []
         self._next_faller = deque([])

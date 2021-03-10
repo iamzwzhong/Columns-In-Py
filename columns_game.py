@@ -91,7 +91,6 @@ class ColumnsGame:
                     self._state.update()
                     self._state.check_matching()
                     self._state.destroy_jewels()
-                print(self._state._faller_rows)
             
 
     def _create_surface(self,size:(int,int))->None:
